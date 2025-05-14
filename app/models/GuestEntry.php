@@ -92,11 +92,11 @@ class GuestEntry
         return $success;
     }
 
-    public function update($id, $nama, $instansi, $tujuan, $tanggal, $waktu)
+    public function update($id, $nama, $instansi, $tujuan)
     {
-        $stmt = $this->conn->prepare("UPDATE " . $this->table_name . " SET nama=?, instansi=?, tujuan=?, tanggal=?, waktu=? WHERE id=?");
+        $stmt = $this->conn->prepare("UPDATE " . $this->table_name . " SET nama=?, instansi=?, tujuan=? WHERE id=?");
 
-        $stmt->bind_param("sssssi", $nama, $instansi, $tujuan, $tanggal, $waktu, $id);
+        $stmt->bind_param("sssi", $nama, $instansi, $tujuan, $id);
 
         $success = $stmt->execute();
         $stmt->close();

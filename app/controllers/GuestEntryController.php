@@ -15,6 +15,7 @@ class GuestEntryController
         $this->conn = $database->getConnection();
 
         $this->model = new GuestEntry($this->conn);
+        date_default_timezone_set('Asia/Jakarta');
     }
 
     public function getAll($request = null)
@@ -48,7 +49,7 @@ class GuestEntryController
             return $errors;
         }
 
-        if ($this->model->update($id, $data['nama'], $data['instansi'], $data['tujuan'], $data['tanggal'], $data['waktu'])) {
+        if ($this->model->update($id, $data['nama'], $data['instansi'], $data['tujuan'])) {
             return true;
         }
 
@@ -80,14 +81,6 @@ class GuestEntryController
             $errors[] = "Silakan masukkan tujuan kunjungan";
         }
 
-        if (empty($data['tanggal'])) {
-            $errors[] = "Silakan pilih tanggal kunjungan";
-        }
-        
-        if (empty($data['waktu'])) {
-            $errors[] = "Silakan masukkan waktu kunjungan";
-        }
-
         return $errors;
     }
 
@@ -103,20 +96,17 @@ class GuestEntryController
 
     public function processFormData($formData, $isUpdate = false)
     {
-        if (!$isUpdate) {
-            $formData['tanggal'] = date('Y-m-d');
-            $formData['waktu'] = date('H:i:s');
-        } else {
-            $formData['tanggal'] = date('Y-m-d', strtotime($formData['tanggal']));
-            $formData['waktu'] = date('H:i:s', strtotime($formData['waktu']));
-        }
-
-        return [
+        $data = [
             'nama' => trim($formData['nama'] ?? ''),
             'instansi' => trim($formData['instansi'] ?? ''),
             'tujuan' => trim($formData['tujuan'] ?? ''),
-            'tanggal' => $formData['tanggal'] ?? '',
-            'waktu' => $formData['waktu'] ?? ''
         ];
+
+        if (!$isUpdate) {
+            $data['tanggal'] = date('Y-m-d');
+            $data['waktu'] = date('H:i:s');
+        }
+
+        return $data;
     }
 }
